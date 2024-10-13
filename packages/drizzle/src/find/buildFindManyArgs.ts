@@ -1,5 +1,7 @@
 import type { DBQueryConfig } from 'drizzle-orm'
-import type { Field, JoinQuery } from 'payload'
+import type { Field, JoinQuery, SelectType } from 'payload'
+
+import { getSelectMode } from 'payload/shared'
 
 import type { BuildQueryJoinAliases, DrizzleAdapter } from '../types.js'
 
@@ -15,6 +17,7 @@ type BuildFindQueryArgs = {
    */
   joins?: BuildQueryJoinAliases
   locale?: string
+  select?: SelectType
   tableName: string
 }
 
@@ -33,6 +36,7 @@ export const buildFindManyArgs = ({
   joinQuery,
   joins = [],
   locale,
+  select,
   tableName,
 }: BuildFindQueryArgs): Record<string, unknown> => {
   const result: Result = {
@@ -40,11 +44,19 @@ export const buildFindManyArgs = ({
     with: {},
   }
 
+  if (select) {
+    result.columns = {
+      id: true,
+    }
+  }
+
   const _locales: Result = {
-    columns: {
-      id: false,
-      _parentID: false,
-    },
+    columns: select
+      ? { _locale: true }
+      : {
+          id: false,
+          _parentID: false,
+        },
     extras: {},
     with: {},
   }
@@ -79,10 +91,6 @@ export const buildFindManyArgs = ({
     }
   }
 
-  if (adapter.tables[`${tableName}${adapter.localesSuffix}`]) {
-    result.with._locales = _locales
-  }
-
   traverseFields({
     _locales,
     adapter,
@@ -94,10 +102,19 @@ export const buildFindManyArgs = ({
     joins,
     locale,
     path: '',
+    select,
+    selectMode: select ? getSelectMode(select) : undefined,
     tablePath: '',
     topLevelArgs: result,
     topLevelTableName: tableName,
   })
+
+  if (
+    adapter.tables[`${tableName}${adapter.localesSuffix}`] &&
+    (!select || Object.keys(_locales.columns).length > 1)
+  ) {
+    result.with._locales = _locales
+  }
 
   return result
 }
