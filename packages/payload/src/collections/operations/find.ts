@@ -134,7 +134,7 @@ export const findOperation = async <TSlug extends CollectionSlug>(
         page: sanitizedPage,
         pagination: usePagination,
         req,
-        sort: getQueryDraftsSort(sort),
+        sort: getQueryDraftsSort({ collectionConfig, sort }),
         where: fullWhere,
       })
     } else {
