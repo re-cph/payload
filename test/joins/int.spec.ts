@@ -397,7 +397,10 @@ describe('Joins Field', () => {
         data: { categoryVersion: category.id },
       })
 
-      const res = await payload.find({ collection: 'categories-versions', draft: true })
+      const res = await payload.find({
+        collection: 'categories-versions',
+        draft: true,
+      })
 
       expect(
         res.docs[0].relatedVersions.docs.some((x) => (x as TypeWithID).id === version.id),

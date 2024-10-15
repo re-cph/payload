@@ -233,6 +233,7 @@ export const traverseFields = ({
           if (joinQuery === false) {
             break
           }
+
           const {
             limit: limitArg = 10,
             sort,
