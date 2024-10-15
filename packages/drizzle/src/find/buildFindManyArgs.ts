@@ -61,35 +61,13 @@ export const buildFindManyArgs = ({
     with: {},
   }
 
-  if (adapter.tables[`${tableName}_texts`]) {
-    result.with._texts = {
-      columns: {
-        id: false,
-        parent: false,
-      },
-      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
-    }
-  }
-
-  if (adapter.tables[`${tableName}_numbers`]) {
-    result.with._numbers = {
-      columns: {
-        id: false,
-        parent: false,
-      },
-      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
-    }
-  }
-
-  if (adapter.tables[`${tableName}${adapter.relationshipsSuffix}`]) {
-    result.with._rels = {
-      columns: {
-        id: false,
-        parent: false,
-      },
-      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
-    }
-  }
+  const withTabledFields = select
+    ? {}
+    : {
+        numbers: true,
+        rels: true,
+        texts: true,
+      }
 
   traverseFields({
     _locales,
@@ -107,7 +85,38 @@ export const buildFindManyArgs = ({
     tablePath: '',
     topLevelArgs: result,
     topLevelTableName: tableName,
+    withTabledFields,
   })
+
+  if (adapter.tables[`${tableName}_texts`] && withTabledFields.texts) {
+    result.with._texts = {
+      columns: {
+        id: false,
+        parent: false,
+      },
+      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
+    }
+  }
+
+  if (adapter.tables[`${tableName}_numbers`] && withTabledFields.numbers) {
+    result.with._numbers = {
+      columns: {
+        id: false,
+        parent: false,
+      },
+      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
+    }
+  }
+
+  if (adapter.tables[`${tableName}${adapter.relationshipsSuffix}`] && withTabledFields.rels) {
+    result.with._rels = {
+      columns: {
+        id: false,
+        parent: false,
+      },
+      orderBy: ({ order }, { asc: ASC }) => [ASC(order)],
+    }
+  }
 
   if (
     adapter.tables[`${tableName}${adapter.localesSuffix}`] &&
