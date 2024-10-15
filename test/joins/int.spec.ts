@@ -374,6 +374,11 @@ describe('Joins Field', () => {
   })
 
   describe('Joins with versions', () => {
+    afterEach(async () => {
+      await payload.delete({ collection: 'versions', where: {} })
+      await payload.delete({ collection: 'categories-versions', where: {} })
+    })
+
     it('should populate joins when versions on both sides draft false', async () => {
       const category = await payload.create({ collection: 'categories-versions', data: {} })
 
@@ -384,9 +389,7 @@ describe('Joins Field', () => {
 
       const res = await payload.find({ collection: 'categories-versions', draft: false })
 
-      expect(
-        res.docs[0].relatedVersions.docs.some((x) => (x as TypeWithID).id === version.id),
-      ).toBeTruthy()
+      expect(res.docs[0].relatedVersions.docs[0].id).toBe(version.id)
     })
 
     it('should populate joins when versions on both sides draft true payload.db.queryDrafts', async () => {
@@ -402,9 +405,7 @@ describe('Joins Field', () => {
         draft: true,
       })
 
-      expect(
-        res.docs[0].relatedVersions.docs.some((x) => (x as TypeWithID).id === version.id),
-      ).toBeTruthy()
+      expect(res.docs[0].relatedVersions.docs[0].id).toBe(version.id)
     })
   })
 

@@ -29,20 +29,10 @@ export const queryDrafts: QueryDrafts = async function queryDrafts(
 
   const combinedWhere = combineQueries({ latest: { equals: true } }, where)
 
-  let queryDraftsJoins: JoinQuery = joins
-
-  if (typeof joins === 'object') {
-    queryDraftsJoins = {}
-
-    for (const k in joins) {
-      queryDraftsJoins[`version.${k}`] = joins[k]
-    }
-  }
-
   const result = await findMany({
     adapter: this,
     fields,
-    joins: queryDraftsJoins,
+    joins,
     limit,
     locale,
     page,
@@ -50,6 +40,7 @@ export const queryDrafts: QueryDrafts = async function queryDrafts(
     req,
     sort,
     tableName,
+    versions: true,
     where: combinedWhere,
   })
 
