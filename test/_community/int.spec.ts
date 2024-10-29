@@ -1,4 +1,4 @@
-import type { Payload } from 'payload'
+import type { Payload, PayloadRequest } from 'payload'
 
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -7,7 +7,6 @@ import type { NextRESTClient } from '../helpers/NextRESTClient.js'
 
 import { devUser } from '../credentials.js'
 import { initPayloadInt } from '../helpers/initPayloadInt.js'
-import { postsSlug } from './collections/Posts/index.js'
 
 let payload: Payload
 let token: string
@@ -48,29 +47,61 @@ describe('_Community Tests', () => {
   // use the tests below as a guide
   // --__--__--__--__--__--__--__--__--__
 
-  it('local API example', async () => {
-    const newPost = await payload.create({
-      collection: postsSlug,
-      data: {
-        text: 'LOCAL API EXAMPLE',
-      },
+  it('Should have correct locale: With req excluded', async () => {
+    const req = {
+      payload,
+      locale: 'da',
+    } as unknown as PayloadRequest
+
+    await payload.find({
+      collection: 'foo',
+      locale: 'da',
     })
 
-    expect(newPost.text).toEqual('LOCAL API EXAMPLE')
+    expect(req.locale).toStrictEqual('da')
+
+    await payload.find({
+      collection: 'foo',
+      locale: 'en',
+    })
+
+    expect(req.locale).toStrictEqual('da')
+
+    await payload.find({
+      collection: 'foo',
+      locale: 'all',
+    })
+
+    expect(req.locale).toStrictEqual('da')
   })
+  it('Should have correct locale: With req included', async () => {
+    const req = {
+      payload,
+      locale: 'da',
+    } as unknown as PayloadRequest
 
-  it('rest API example', async () => {
-    const data = await restClient
-      .POST(`/${postsSlug}`, {
-        body: JSON.stringify({
-          text: 'REST API EXAMPLE',
-        }),
-        headers: {
-          Authorization: `JWT ${token}`,
-        },
-      })
-      .then((res) => res.json())
+    await payload.find({
+      collection: 'foo',
+      req,
+      locale: 'da',
+    })
 
-    expect(data.doc.text).toEqual('REST API EXAMPLE')
+    expect(req.locale).toStrictEqual('da')
+
+    await payload.find({
+      collection: 'foo',
+      req,
+      locale: 'en',
+    })
+
+    expect(req.locale).toStrictEqual('da')
+
+    await payload.find({
+      collection: 'foo',
+      req,
+      locale: 'all',
+    })
+
+    expect(req.locale).toStrictEqual('da')
   })
 })

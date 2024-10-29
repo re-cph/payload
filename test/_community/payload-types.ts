@@ -11,9 +11,7 @@ export interface Config {
     users: UserAuthOperations;
   };
   collections: {
-    posts: Post;
-    simple: Simple;
-    media: Media;
+    foo: Foo;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -22,11 +20,8 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {
-    menu: Menu;
-    'custom-ts': CustomT;
-  };
-  locale: null;
+  globals: {};
+  locale: 'da' | 'en';
   user: User & {
     collection: 'users';
   };
@@ -51,100 +46,13 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "foo".
  */
-export interface Post {
+export interface Foo {
   id: string;
-  text?: string | null;
-  serverTextField?: string | null;
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  myBlocks?:
-    | (
-        | {
-            test?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'test';
-          }
-        | {
-            test2?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'someBlock2';
-          }
-      )[]
-    | null;
+  bar?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "simple".
- */
-export interface Simple {
-  id: string;
-  text?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -171,16 +79,8 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'posts';
-        value: string | Post;
-      } | null)
-    | ({
-        relationTo: 'simple';
-        value: string | Simple;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'foo';
+        value: string | Foo;
       } | null)
     | ({
         relationTo: 'users';
@@ -230,29 +130,10 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "menu".
+ * via the `definition` "auth".
  */
-export interface Menu {
-  id: string;
-  globalText?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-ts".
- */
-export interface CustomT {
-  id: string;
-  custom?: 'hello' | 'world';
-  withDefinitionsUsage?: ObjectWithNumber[];
-  json: {
-    id: string;
-    name: string;
-    age?: number;
-  }[];
-  updatedAt?: string | null;
-  createdAt?: string | null;
+export interface Auth {
+  [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -260,13 +141,6 @@ export interface CustomT {
  */
 export interface ObjectWithNumber {
   id?: number;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "auth".
- */
-export interface Auth {
-  [k: string]: unknown;
 }
 
 
