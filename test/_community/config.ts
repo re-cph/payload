@@ -19,6 +19,11 @@ export default buildConfigWithDefaults({
       baseDir: path.resolve(dirname),
     },
   },
+  localization: {
+    locales: ['da', 'en'],
+    defaultLocale: 'da',
+    fallback: false,
+  },
   editor: lexicalEditor({}),
   globals: [
     // ...add more globals here
@@ -33,11 +38,22 @@ export default buildConfigWithDefaults({
       },
     })
 
-    await payload.create({
+    const resp = await payload.create({
       collection: postsSlug,
       data: {
-        title: 'example post',
+        title: 'danish title',
+        slug: 'danish',
       },
+      locale: 'da',
+    })
+    await payload.update({
+      collection: postsSlug,
+      id: resp.id,
+      data: {
+        title: 'english title',
+        slug: 'english',
+      },
+      locale: 'en',
     })
   },
   typescript: {
