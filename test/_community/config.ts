@@ -1,6 +1,9 @@
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { fileURLToPath } from 'node:url'
 import path from 'path'
+import { da } from 'payload/i18n/da'
+import { en } from 'payload/i18n/en'
 
 import { buildConfigWithDefaults } from '../buildConfigWithDefaults.js'
 import { devUser } from '../credentials.js'
@@ -40,7 +43,20 @@ export default buildConfigWithDefaults({
       },
     })
   },
+  i18n: {
+    supportedLanguages: { en, da },
+  },
+  localization: {
+    defaultLocale: 'en',
+    locales: ['en', 'da'],
+    defaultLocalePublishOption: 'active',
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  db: postgresAdapter({
+    pool: {
+      connectionString: 'postgres://postgres:postgres@127.0.0.1:5432/postgres',
+    },
+  }),
 })

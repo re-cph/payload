@@ -1,3 +1,4 @@
+import type { TFunction } from '@payloadcms/translations'
 import type { CollectionConfig } from 'payload'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -15,11 +16,24 @@ export const PostsCollection: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'content',
-      type: 'richText',
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [...defaultFeatures],
-      }),
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'content',
+          fields: [
+            {
+              name: 'content',
+              type: 'richText',
+              editor: lexicalEditor({
+                features: ({ defaultFeatures }) => [...defaultFeatures],
+              }),
+            },
+          ],
+        },
+      ],
     },
   ],
+  versions: {
+    drafts: true,
+  },
 }
